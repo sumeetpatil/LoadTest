@@ -2,7 +2,7 @@ package com.loadtest.inits;
 
 /**
  * @author sumeetpatil
- * Load Test Init
+ * Load Test Init 
  */
 public class Init {
 
