@@ -2,6 +2,7 @@ package com.loadtest.inits;
 
 /**
  * Init Constants
+ * 
  * @author sumeetpatil
  */
 public interface InitConstants {

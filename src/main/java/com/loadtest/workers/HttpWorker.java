@@ -13,16 +13,17 @@ import com.loadtest.status.HttpLoadTestStatus;
 
 /**
  * Http Worker
+ * 
  * @author sumeetpatil
  */
-public class HttpWorker implements Callable<HttpLoadTestStatus>, WorkerConstants{
+public class HttpWorker implements Callable<HttpLoadTestStatus>, WorkerConstants {
 	String url;
 	HttpLoadTestStatus httpLoadStatus;
-	
+
 	/**
 	 * @param url
 	 */
-	public HttpWorker(String url, HttpLoadTestStatus httpLoadStatus){
+	public HttpWorker(String url, HttpLoadTestStatus httpLoadStatus) {
 		this.url = url;
 		this.httpLoadStatus = httpLoadStatus;
 	}
@@ -32,7 +33,7 @@ public class HttpWorker implements Callable<HttpLoadTestStatus>, WorkerConstants
 		sendGet(url);
 		return httpLoadStatus;
 	}
-	
+
 	/**
 	 * Send Get Request
 	 * 
@@ -46,14 +47,13 @@ public class HttpWorker implements Callable<HttpLoadTestStatus>, WorkerConstants
 		HttpURLConnection con = null;
 		BufferedReader in = null;
 		int responseCode = 0;
-		
+
 		try {
 			obj = new URL(url);
 		} catch (MalformedURLException e) {
 			httpLoadStatus.setException(e);
 		}
 
-		
 		try {
 			con = (HttpURLConnection) obj.openConnection();
 		} catch (IOException e) {

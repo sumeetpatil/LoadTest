@@ -7,12 +7,13 @@ import java.util.Properties;
 
 /**
  * File Utility
+ * 
  * @author sumeetpatil
  *
  */
-public class FileUtils implements UtilConstants{
+public class FileUtils implements UtilConstants {
 
-	public static Properties getProperties(){
+	public static Properties getProperties() {
 		Properties prop = new Properties();
 		InputStream input = null;
 		try {

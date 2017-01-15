@@ -14,20 +14,20 @@ import com.loadtest.workers.HttpWorker;
 
 /**
  * Load Test for http protocol
+ * 
  * @author sumeetpatil
  */
 public class HttpLoadTest {
 	int totalUsers;
 	int concurrentUsers;
 	String url;
-	
-	
+
 	/**
 	 * @param totalUsers
 	 * @param concurrentUsers
-	 * @param url 
+	 * @param url
 	 */
-	HttpLoadTest(int totalUsers, int concurrentUsers, String url){
+	HttpLoadTest(int totalUsers, int concurrentUsers, String url) {
 		this.concurrentUsers = concurrentUsers;
 		this.totalUsers = totalUsers;
 		this.url = url;
@@ -35,10 +35,11 @@ public class HttpLoadTest {
 
 	/**
 	 * Run Http Load Test
-	 * @throws InterruptedException 
-	 * @throws ExecutionException 
+	 * 
+	 * @throws InterruptedException
+	 * @throws ExecutionException
 	 */
-	protected void runLoadTest() throws InterruptedException, ExecutionException{
+	protected void runLoadTest() throws InterruptedException, ExecutionException {
 		ExecutorService ex = Executors.newFixedThreadPool(concurrentUsers);
 		Set<Callable<HttpLoadTestStatus>> callables = new HashSet<Callable<HttpLoadTestStatus>>();
 		for (int i = 0; i < totalUsers; i++) {
@@ -46,25 +47,25 @@ public class HttpLoadTest {
 			httpLoadStatus.setLoadTestId(i);
 			callables.add(new HttpWorker(url, httpLoadStatus));
 		}
-		
+
 		List<Future<HttpLoadTestStatus>> futures = ex.invokeAll(callables);
-		
+
 		int count = futures.size();
-		
-		for(Future<HttpLoadTestStatus> future : futures){
+
+		for (Future<HttpLoadTestStatus> future : futures) {
 			HttpLoadTestStatus httpStatus = future.get();
-			System.out.println("Load Test Id "+ httpStatus.getLoadTestId());
-			
-		    Exception exception = httpStatus.getException();
-			if(exception!=null){
-		    	System.out.println("Load Test Exception " + exception.getMessage());
-		    }
-			
-			System.out.println("Load Test Status "+httpStatus.getResponseCode());
+			System.out.println("Load Test Id " + httpStatus.getLoadTestId());
+
+			Exception exception = httpStatus.getException();
+			if (exception != null) {
+				System.out.println("Load Test Exception " + exception.getMessage());
+			}
+
+			System.out.println("Load Test Status " + httpStatus.getResponseCode());
 		}
-		
-		System.out.println("Total Load Runs "+count);
-		
+
+		System.out.println("Total Load Runs " + count);
+
 		ex.shutdown();
 	}
 }

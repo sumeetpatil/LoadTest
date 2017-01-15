@@ -2,6 +2,7 @@ package com.loadtest.workers;
 
 /**
  * Worker Constants
+ * 
  * @author sumeetpatil
  */
 public interface WorkerConstants {
