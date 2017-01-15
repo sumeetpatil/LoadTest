@@ -4,54 +4,96 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.concurrent.Callable;
+
+import com.loadtest.status.HttpLoadTestStatus;
 
 /**
  * Http Worker
  * @author sumeetpatil
  */
-public class HttpWorker implements Callable<Exception>, WorkerConstants{
+public class HttpWorker implements Callable<HttpLoadTestStatus>, WorkerConstants{
 	String url;
+	HttpLoadTestStatus httpLoadStatus;
 	
 	/**
 	 * @param url
 	 */
-	public HttpWorker(String url){
+	public HttpWorker(String url, HttpLoadTestStatus httpLoadStatus){
 		this.url = url;
+		this.httpLoadStatus = httpLoadStatus;
 	}
 
 	@Override
-	public Exception call() throws Exception {
+	public HttpLoadTestStatus call() throws Exception {
 		sendGet(url);
-		return null;
+		return httpLoadStatus;
 	}
 	
 	/**
 	 * Send Get Request
+	 * 
 	 * @param url
-	 * @throws IOException
+	 * @return
 	 */
-	private void sendGet(String url) throws IOException{
-
-		URL obj = new URL(url);
-		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
-		con.setRequestMethod(METHOD_GET);
-
-		int responseCode = con.getResponseCode();
-		System.out.println("\nSending 'GET' request to URL : " + url);
-		System.out.println("Response Code : " + responseCode);
-
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+	private synchronized HttpLoadTestStatus sendGet(String url) {
 		String inputLine;
 		StringBuffer response = new StringBuffer();
-
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
+		URL obj = null;
+		HttpURLConnection con = null;
+		BufferedReader in = null;
+		int responseCode = 0;
+		
+		try {
+			obj = new URL(url);
+		} catch (MalformedURLException e) {
+			httpLoadStatus.setException(e);
 		}
-		in.close();
 
-		System.out.println(response.toString());
+		
+		try {
+			con = (HttpURLConnection) obj.openConnection();
+		} catch (IOException e) {
+			httpLoadStatus.setException(e);
+		}
+
+		try {
+			con.setRequestMethod(METHOD_GET);
+		} catch (ProtocolException e) {
+			httpLoadStatus.setException(e);
+		}
+
+		try {
+			responseCode = con.getResponseCode();
+		} catch (IOException e) {
+			httpLoadStatus.setException(e);
+		}
+
+		httpLoadStatus.setResponseCode(responseCode);
+
+		try {
+			in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+		} catch (IOException e) {
+			httpLoadStatus.setException(e);
+		}
+
+		try {
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+		} catch (IOException e) {
+			httpLoadStatus.setException(e);
+		}
+
+		try {
+			in.close();
+		} catch (IOException e) {
+			httpLoadStatus.setException(e);
+		}
+
+		return httpLoadStatus;
 	}
 }

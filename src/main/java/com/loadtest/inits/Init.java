@@ -1,6 +1,7 @@
 package com.loadtest.inits;
 
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 
 import com.loadtest.utils.FileUtils;
 
@@ -10,7 +11,7 @@ import com.loadtest.utils.FileUtils;
  */
 public class Init implements InitConstants{
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException, ExecutionException {
 		Properties pro = FileUtils.getProperties();
 		String protocol = pro.get(PROTOCOL).toString();
 		String concurrentUsers = pro.get(CONCURRENTUSERS).toString();
