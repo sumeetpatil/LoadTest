@@ -58,7 +58,7 @@ public class HttpLoadTest {
 
 			Exception exception = httpStatus.getException();
 			if (exception != null) {
-				System.out.println("Load Test Exception " + exception.getMessage());
+				System.out.println("Load Test Failed for " + exception.getMessage());
 			}
 
 			System.out.println("Load Test Status " + httpStatus.getResponseCode());

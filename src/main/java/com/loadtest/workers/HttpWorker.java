@@ -52,24 +52,28 @@ public class HttpWorker implements Callable<HttpLoadTestStatus>, WorkerConstants
 			obj = new URL(url);
 		} catch (MalformedURLException e) {
 			httpLoadStatus.setException(e);
+			return httpLoadStatus;
 		}
 
 		try {
 			con = (HttpURLConnection) obj.openConnection();
 		} catch (IOException e) {
 			httpLoadStatus.setException(e);
+			return httpLoadStatus;
 		}
 
 		try {
 			con.setRequestMethod(METHOD_GET);
 		} catch (ProtocolException e) {
 			httpLoadStatus.setException(e);
+			return httpLoadStatus;
 		}
 
 		try {
 			responseCode = con.getResponseCode();
 		} catch (IOException e) {
 			httpLoadStatus.setException(e);
+			return httpLoadStatus;
 		}
 
 		httpLoadStatus.setResponseCode(responseCode);
@@ -78,6 +82,7 @@ public class HttpWorker implements Callable<HttpLoadTestStatus>, WorkerConstants
 			in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 		} catch (IOException e) {
 			httpLoadStatus.setException(e);
+			return httpLoadStatus;
 		}
 
 		try {
@@ -86,12 +91,14 @@ public class HttpWorker implements Callable<HttpLoadTestStatus>, WorkerConstants
 			}
 		} catch (IOException e) {
 			httpLoadStatus.setException(e);
+			return httpLoadStatus;
 		}
 
 		try {
 			in.close();
 		} catch (IOException e) {
 			httpLoadStatus.setException(e);
+			return httpLoadStatus;
 		}
 
 		return httpLoadStatus;
